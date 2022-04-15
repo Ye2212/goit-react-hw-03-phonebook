@@ -13,8 +13,9 @@ class App extends Component {
   state = {
     contacts:
       contacts,
-    filter: '   ',
+    filter: '',
   }
+
 
   addContact = ({ name, number }) => {
     // console.log("App: ", { name, number });
@@ -52,9 +53,25 @@ class App extends Component {
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normilizedValue))
   }
+  componentDidMount() {
+    // console.log("App componentDidMount");
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    // console.log(parsedContacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts })
+    }
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    // console.log("App componentDidUpdate");
+    if (this.state.contacts !== prevState.contacts) {
+      //   console.log('Обновилось поле контактов');
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+    }
+  }
   render() {
-    console.log(this.state.contacts.length);
+    // console.log(this.state.contacts.length);
     const { length } = this.state.contacts;
     const { filter } = this.state;
     return (
